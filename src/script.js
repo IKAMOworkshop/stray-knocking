@@ -2,9 +2,6 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
-import raymarchingVertex from './shader/distortion/vertex.glsl'
-import raymarchingFragment from './shader/distortion/fragment.glsl'
-
 
 /**
  * Base
@@ -25,8 +22,6 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const matcapTextureOne = textureLoader.load('./textures/matcaps/7.png')
-const matcapTextureTwo = textureLoader.load('./textures/matcaps/2.png')
 
 /**
  * Test mesh
@@ -35,14 +30,9 @@ const matcapTextureTwo = textureLoader.load('./textures/matcaps/2.png')
 const geometry = new THREE.PlaneGeometry(1, 1, 1, 1)
 
 // Material
-const material = new THREE.ShaderMaterial({
+const material = new THREE.MeshBasicMaterial({
     side: THREE.DoubleSide,
-    uniforms:{
-        uTime: new THREE.Uniform(0),
-        uResolution: new THREE.Uniform(new THREE.Vector4()),
-    },
-    vertexShader: raymarchingVertex,
-    fragmentShader: raymarchingFragment
+    color: 0xffffff,
 })
 
 // Mesh
@@ -57,47 +47,11 @@ const sizes = {
     height: window.innerHeight
 }
 
-const imageAspect = 1;
-
-let a1
-let a2
-
-if(sizes.height/sizes.width > imageAspect){
-    a1 = (sizes.width/sizes.height) * imageAspect
-    a2 = 1
-} else {
-    a1 = 1
-    a2 = (sizes.height/sizes.width) * imageAspect
-}
-
-material.uniforms.uResolution.value.x = sizes.width
-material.uniforms.uResolution.value.y = sizes.height
-material.uniforms.uResolution.value.z = a1
-material.uniforms.uResolution.value.w = a2
-
 window.addEventListener('resize', () =>
 {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
-
-    const imageAspect = 1;
-
-    let a1
-    let a2
-
-    if(sizes.height/sizes.width > imageAspect){
-        a1 = (sizes.width/sizes.height) * imageAspect
-        a2 = 1
-    } else {
-        a1 = 1
-        a2 = (sizes.height/sizes.width) * imageAspect
-    }
-
-    material.uniforms.uResolution.value.x = sizes.width
-    material.uniforms.uResolution.value.y = sizes.height
-    material.uniforms.uResolution.value.z = a1
-    material.uniforms.uResolution.value.w = a2
 
     // Update camera
     camera.aspect = sizes.width / sizes.height
